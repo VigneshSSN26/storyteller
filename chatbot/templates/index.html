@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Story Generator Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #chat-box {
+            overflow-y: scroll;
+            max-height: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #dcf8c6;
+            float: right;
+        }
+        .bot-message {
+            background-color: #e5e5ea;
+            float: left;
+        }
+        input[type="text"], input[type="number"], button {
+            margin-top: 10px;
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Story Generator Chatbot</h1>
+        <div id="chat-box">
+            <div class="message bot-message">Welcome to the Story Generator Chatbot!</div>
+        </div>
+        <input type="text" id="prompt" placeholder="Enter the prompt (e.g., 'Generate a story of 100 words in the adventures')">
+        <button id="send">Send</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#send").click(function() {
+                var prompt = $("#prompt").val();
+                
+                if (prompt) {
+                    $.ajax({
+                        url: "/generate",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({"prompt": prompt}),
+                        success: function(response) {
+                            var story = response.story;
+                            $("#chat-box").append('<div class="message user-message"><i class="far fa-user"></i> ' + prompt + '</div>');
+                            $("#chat-box").append('<div class="message bot-message"><i class="fas fa-robot"></i> ' + story + '</div>');
+                            $("#prompt").val('');
+                            $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+                        }
+                    });
+                } else {
+                    alert("Please enter a prompt");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
